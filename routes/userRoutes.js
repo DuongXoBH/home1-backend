@@ -107,9 +107,13 @@ router.patch("/:id", async (req, res) => {
     user.firstName = firstName || user.firstName;
     user.lastName = lastName || user.lastName;
     user.email = email || user.email;
-
     await user.save();
-    res.json(user);
+    res.status(200).json(
+      {
+        status: "success",
+        data: user,
+      }
+    )
   } catch (err) {
     res.status(500).send(err);
   }
@@ -118,7 +122,7 @@ router.patch("/:id", async (req, res) => {
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const user = await User.findById(id).select("+password");
+    const user = await User.findById(id);
     res.json(user);
   } catch (error) {
     res.status(500).send(error);
