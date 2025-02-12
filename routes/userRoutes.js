@@ -69,13 +69,9 @@ router.post("/login", async (req, res) => {
     const userData = { ...user._doc };
     delete userData.password;
 
-    let options = {
-      maxAge: 20 * 60 * 1000, // would expire in 20minutes
-      httpOnly: true, // The cookie is only accessible by the web server
-      secure: true,
-      sameSite: "None",
-    };
-    const token = userData.generateAccessJWT();
+    
+    const token = user.generateAccessJWT();
+    console.log(token);
 
     // send success response
     return res.status(200).json({
