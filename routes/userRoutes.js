@@ -1,8 +1,8 @@
 import express from "express";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
-import { check } from "express-validator";
-import Verify from "../middleware/verify.js";
+// import { check } from "express-validator";
+// import Verify from "../middleware/verify.js";
 
 const router = express.Router();
 
@@ -33,12 +33,11 @@ router.post("/", async (req, res) => {
     const newUser = new User({
       firstName: firstName,
       lastName: lastName,
-      email,
+      email: email,
       password: hash,
     });
     await newUser.save();
     res.status(201).json(newUser);
-
   } catch (err) {
     res.status(500).send(err);
   }
@@ -76,7 +75,7 @@ router.post("/login", async (req, res) => {
       secure: true,
       sameSite: "None",
     };
-    const token = user.generateAccessJWT();
+    const token = userData.generateAccessJWT();
 
     // send success response
     return res.status(200).json({
@@ -94,7 +93,7 @@ router.post("/login", async (req, res) => {
     });
   }
 });
-
+ 
 // PATCH cập nhật người dùng
 router.patch("/:id", async (req, res) => {
   const { id } = req.params;
@@ -108,17 +107,16 @@ router.patch("/:id", async (req, res) => {
     user.lastName = lastName || user.lastName;
     user.email = email || user.email;
     await user.save();
-    res.status(200).json(
-      {
-        status: "success",
-        data: user,
-      }
-    )
+    res.status(200).json({
+      status: "success",
+      data: user,
+    });
   } catch (err) {
     res.status(500).send(err);
   }
 });
-//getbyid
+
+//GET user by id
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -128,6 +126,7 @@ router.get("/:id", async (req, res) => {
     res.status(500).send(error);
   }
 });
+
 // DELETE xóa người dùng
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
