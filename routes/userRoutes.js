@@ -68,10 +68,7 @@ router.post("/login", async (req, res) => {
     //data without password
     const userData = { ...user._doc };
     delete userData.password;
-
-    
     const token = user.generateAccessJWT();
-    console.log(token);
 
     // send success response
     return res.status(200).json({
@@ -130,7 +127,7 @@ router.delete("/:id", async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(id);
     if (!user) return res.status(404).send("User not found");
-    res.status(200).send("User deleted");
+    res.status(204).send("User deleted");
   } catch (err) {
     res.status(500).send(err);
   }

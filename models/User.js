@@ -6,8 +6,8 @@ const userSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String, require:true, select:false}
-});
+  password: { type: String, required:true, select:false}
+},{timestamps: true});
 userSchema.methods.generateAccessJWT = function () {
   let payload = {
     id: this._id,
