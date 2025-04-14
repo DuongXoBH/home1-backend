@@ -27,7 +27,7 @@ router.post("/", async (req, res) => {
       img,
       tittleText,
       nameText,
-      descriptionText, 
+      descriptionText,
     });
 
     await newBlog.save();
@@ -39,7 +39,7 @@ router.post("/", async (req, res) => {
 
 // Get by id
 router.get("/:id", async (req, res) => {
-  const {id} = req.params;
+  const { id } = req.params;
   try {
     const blog = await Blog.findById(id);
     res.json(blog);
@@ -48,26 +48,24 @@ router.get("/:id", async (req, res) => {
   }
 });
 //Get by page
-router.get("/page/:page", async(req, res) => {
+router.get("/page/:page", async (req, res) => {
   const page = req.params.page;
   try {
     const blogs = await Blog.find();
     const blogsGroup = [];
-    
-    blogs.forEach((element,index)=>{
-      if (Math.ceil((index+1)/3) == page) {
+
+    blogs.forEach((element, index) => {
+      if (Math.ceil((index + 1) / 3) == page) {
         blogsGroup.push(element);
       }
-    })
+    });
     res.status(200).json({
       data: blogsGroup,
-      itemsCount: blogs.length
+      itemsCount: blogs.length,
     });
-    console.log("🚀 ~ router.get ~ blogsGroup:", blogsGroup)
-
+    console.log("🚀 ~ router.get ~ blogsGroup:", blogsGroup);
   } catch (error) {
     res.status(500).json({ message: "Lỗi server", error: err });
-
   }
-})
+});
 export default router;
