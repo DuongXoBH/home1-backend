@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import userRoutes from "./routes/userRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import articleRoutes from "./routes/articleRoutes.js";
 import orderPaymentRoutes from "./routes/orderPaymentRoutes.js";
 import { MONGO_URI, PORT } from "./config/index.js";
 import dotenv from "dotenv";
@@ -26,6 +27,7 @@ app.use("/user", userRoutes);
 app.use("/blog", blogRoutes);
 app.use("/orders", orderRoutes);
 app.use("/orders_payment", orderPaymentRoutes);
+app.use("/articles", articleRoutes);
 
 // Lắng nghe trên cổng 5000
 app.listen(PORT, () => {
