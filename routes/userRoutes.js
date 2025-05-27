@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
 
 // POST thêm người dùng
 router.post("/", async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { name, email, password } = req.body;
   try {
     // todo: check unique mail
     const isUnique = await User.findOne({ email: email });
@@ -31,8 +31,7 @@ router.post("/", async (req, res) => {
     //hash pasword
     const hash = await bcrypt.hash(password, 10);
     const newUser = new User({
-      firstName: firstName,
-      lastName: lastName,
+      name: name,
       email: email,
       password: hash,
     });
@@ -105,14 +104,13 @@ router.get("/me", verify, async (req, res) => {
 // PATCH cập nhật người dùng
 router.patch("/:id", async (req, res) => {
   const { id } = req.params;
-  const { firstName, lastName, email } = req.body;
+  const { name, email } = req.body;
 
   try {
     const user = await User.findById(id);
     if (!user) return res.status(404).send("User not found");
 
-    user.firstName = firstName || user.firstName;
-    user.lastName = lastName || user.lastName;
+    user.name = name || user.name;
     user.email = email || user.email;
     await user.save();
     res.status(200).json({
