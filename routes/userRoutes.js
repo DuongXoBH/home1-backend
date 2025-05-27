@@ -86,7 +86,22 @@ router.post("/login", async (req, res) => {
     });
   }
 });
- 
+
+//Get me từ token
+router.get("/me", verify, async (req, res) => {
+  try {
+    const user = req.user;
+    const userData = { ...user._doc };
+    delete userData.password; // xóa password nếu có
+    res.status(200).json({
+      status: "success",
+      data: userData,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 // PATCH cập nhật người dùng
 router.patch("/:id", async (req, res) => {
   const { id } = req.params;
