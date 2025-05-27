@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
 
 // POST thêm người dùng
 router.post("/", async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, role, avatar } = req.body;
   try {
     // todo: check unique mail
     const isUnique = await User.findOne({ email: email });
@@ -34,6 +34,8 @@ router.post("/", async (req, res) => {
       name: name,
       email: email,
       password: hash,
+      role,
+      avatar,
     });
     await newUser.save();
     res.status(201).json(newUser);
