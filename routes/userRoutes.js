@@ -69,14 +69,16 @@ router.post("/login", async (req, res) => {
     //data without password
     const userData = { ...user._doc };
     delete userData.password;
-    const token = user.generateAccessJWT();
+    const accessToken = user.generateAccessJWT();
+    const refreshToken = user.generateRefreshJWT();
 
     // send success response
     return res.status(200).json({
       status: "success",
-      token,
+      accessToken,
+      refreshToken,
       data: userData,
-      message: "You have successfully logged in.",
+      message: "Login successful.",
     });
   } catch (err) {
     // server error
@@ -85,6 +87,30 @@ router.post("/login", async (req, res) => {
       status: "error",
       message: "Internal Server Error",
     });
+  }
+});
+
+//refresh token
+router.post("/auth/refresh", async (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.status(401).json({ message: "Refresh token required" });
+  }
+
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(401).json({ message: "Invalid refresh token" });
+    }
+
+    const newAccessToken = user.generateAccessJWT();
+    return res.status(200).json({ accessToken: newAccessToken });
+  } catch (error) {
+    return res
+      .status(401)
+      .json({ message: "Invalid or expired refresh token" });
   }
 });
 

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
-import { SECRET_ACCESS_TOKEN } from "../config/index.js";
+import { SECRET_ACCESS_TOKEN, SECRET_REFRESH_TOKEN } from "../config/index.js";
 
 const userSchema = new mongoose.Schema(
   {
@@ -18,6 +18,14 @@ userSchema.methods.generateAccessJWT = function () {
   };
   return jwt.sign(payload, SECRET_ACCESS_TOKEN, {
     expiresIn: "20m",
+  });
+};
+userSchema.methods.generateRefreshJWT = function () {
+  let payload = {
+    id: this._id,
+  };
+  return jwt.sign(payload, SECRET_REFRESH_TOKEN, {
+    expiresIn: "1d",
   });
 };
 const User = mongoose.model("User", userSchema);
