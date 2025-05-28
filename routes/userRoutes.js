@@ -94,10 +94,7 @@ router.get("/me", verify, async (req, res) => {
     const user = req.user;
     const userData = { ...user._doc };
     delete userData.password; // xóa password nếu có
-    res.status(200).json({
-      status: "success",
-      data: userData,
-    });
+    res.status(200).json(userData);
   } catch (err) {
     res.status(500).json({ message: "Internal server error" });
   }
