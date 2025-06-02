@@ -6,7 +6,6 @@ import verify from "../middleware/verify.js";
 
 const router = express.Router();
 
-// GET tất cả người dùng
 router.get("/", async (req, res) => {
   try {
     const users = await User.find();
@@ -17,7 +16,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST thêm người dùng
 router.post("/", async (req, res) => {
   const { name, email, password, role, avatar } = req.body;
   try {
@@ -28,7 +26,6 @@ router.post("/", async (req, res) => {
       return;
     }
 
-    //hash pasword
     const hash = await bcrypt.hash(password, 10);
     const newUser = new User({
       name: name,
@@ -126,7 +123,6 @@ router.get("/me", verify, async (req, res) => {
   }
 });
 
-// PATCH cập nhật người dùng
 router.patch("/:id", async (req, res) => {
   const { id } = req.params;
   const { name, email } = req.body;
@@ -157,8 +153,16 @@ router.get("/:id", async (req, res) => {
     res.status(500).send(error);
   }
 });
+router.get("/avatar/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await User.findById(id);
+    res.json(user.avatar);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
 
-// DELETE xóa người dùng
 router.delete("/:id", async (req, res) => {
   const { id } = req.params;
 

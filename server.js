@@ -7,11 +7,14 @@ import blogRoutes from "./routes/blogRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import articleRoutes from "./routes/articleRoutes.js";
 import orderPaymentRoutes from "./routes/orderPaymentRoutes.js";
+import projectRoutes from "./routes/projectRoutes.js";
+import taskRoutes from "./routes/taskRoutes.js";
+import taskStatusRoutes from "./routes/taskStatusRoutes.js";
+import fileRoutes from "./routes/fileRoutes.js";
 import { MONGO_URI, PORT } from "./config/index.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-// Cấu hình CORS và Body Parser
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
@@ -22,14 +25,16 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log("MongoDB connection error:", err));
 
-// Đăng ký các route
 app.use("/user", userRoutes);
 app.use("/blog", blogRoutes);
 app.use("/orders", orderRoutes);
 app.use("/orders_payment", orderPaymentRoutes);
 app.use("/articles", articleRoutes);
+app.use("/projects", projectRoutes);
+app.use("/files", fileRoutes);
+app.use("/task", taskRoutes);
+app.use("/task_status", taskStatusRoutes);
 
-// Lắng nghe trên cổng 5000
 app.listen(PORT, () => {
   console.log("Server is running on port 5000");
 });
