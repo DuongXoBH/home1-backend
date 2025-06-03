@@ -105,6 +105,20 @@ router.get("/:id", verify, async (req, res) => {
       .json({ message: "Failed to fetch project", error: err.message });
   }
 });
+router.patch("/:id", async (req, res) => {
+  const { id } = req.params;
+  const { memberIds } = req.body;
+  try {
+    const project = await Project.findById(id);
+    if (!project) return res.status(404).send("project not found");
+
+    project.memberIds = memberIds || project.memberIds;
+    await project.save();
+    res.status(200).json(project);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
 router.delete("/projects/:id", verify, async (req, res) => {
   try {
     const projectId = req.params.id;

@@ -13,6 +13,7 @@ router.post("/", async (req, res) => {
       title,
       description,
       dueDate,
+      completed: false,
       createdById,
     });
     await Project.findByIdAndUpdate(projectId, {
@@ -41,14 +42,33 @@ router.get("/by_statusId/:statusId", async (req, res) => {
   }
 });
 
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const task = await Task.findById({ id });
+
+    res.status(200).json(task);
+  } catch (err) {
+    res.status(500).json({
+      message: "Failed to fetch task",
+      error: err.message,
+    });
+  }
+});
+
 router.patch("/:id", async (req, res) => {
   const { id } = req.params;
-  const { statusId } = req.body;
+  const { statusId, title, description, dueDate, completed } = req.body;
   try {
     const task = await Task.findById(id);
     if (!task) return res.status(404).send("Task not found");
 
     task.statusId = statusId || task.statusId;
+    task.title = title || task.title;
+    task.description = description || task.description;
+    task.dueDate = dueDate || task.dueDate;
+    task.completed = completed === undefined ? task.completed : completed;
     await task.save();
     res.status(200).json(task);
   } catch (err) {
@@ -60,9 +80,16 @@ router.delete("/:id", async (req, res) => {
   const { id } = req.params;
 
   try {
-    const task = await Task.findByIdAndDelete(id);
+    const task = await Task.findById(id);
+    const project = await Project.findById(task.projectId);
+    project.taskIds = project.taskIds.filter(
+      (taskId) => taskId.toString() !== id
+    );
+
+    await project.save();
+    await task.deleteOne();
     if (!task) return res.status(404).send("Task not found");
-    res.status(204).send("Task deleted");
+    res.status(204).send();
   } catch (err) {
     res.status(500).send(err);
   }
