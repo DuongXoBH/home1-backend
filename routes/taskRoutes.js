@@ -42,6 +42,21 @@ router.get("/by_statusId/:statusId", async (req, res) => {
   }
 });
 
+router.get("/by_projectId/:projectId", async (req, res) => {
+  try {
+    const { projectId } = req.params;
+
+    const task = await Task.find({ projectId }).sort({ createdAt: 1 });
+
+    res.status(200).json(task);
+  } catch (err) {
+    res.status(500).json({
+      message: "Failed to fetch task",
+      error: err.message,
+    });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -89,7 +104,7 @@ router.delete("/:id", async (req, res) => {
     await project.save();
     await task.deleteOne();
     if (!task) return res.status(404).send("Task not found");
-    res.status(204).send();
+    res.status(204).send("Success");
   } catch (err) {
     res.status(500).send(err);
   }
