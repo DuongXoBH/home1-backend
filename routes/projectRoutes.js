@@ -19,9 +19,11 @@ router.post("/", async (req, res) => {
     const { name, memberIds, createdById, images } = req.body;
     const memberId = Array.isArray(memberIds) ? req.body.memberIds : [];
     const defaultImages = [
-      "https://res.cloudinary.com/dtg8bciwm/image/upload/v1748588064/images/h9fqukfrn3ynscusgtww.jpg",
-      "https://res.cloudinary.com/dtg8bciwm/image/upload/v1748580283/images/akgzixdtdpve1yh8h2a2.jpg",
-      "https://res.cloudinary.com/dtg8bciwm/image/upload/v1748580294/images/jmvu694slk7sgjgzpecv.jpg",
+      "https://res.cloudinary.com/dtg8bciwm/image/upload/v1749174212/images/gidlgfldzkjxf7gaty7d.jpg",
+      "https://res.cloudinary.com/dtg8bciwm/image/upload/v1749174233/images/ckpvlruihjgrfsueui4s.jpg",
+      "https://res.cloudinary.com/dtg8bciwm/image/upload/v1749174249/images/uctqkxx7qocyxpeqxndh.jpg",
+      "https://res.cloudinary.com/dtg8bciwm/image/upload/v1749174266/images/d86noqmgna89a9y5bqcj.jpg",
+      "https://res.cloudinary.com/dtg8bciwm/image/upload/v1749174277/images/wnlgx8wlicpe67lkqy8f.jpg",
     ];
     const project = await Project.create({
       name,
