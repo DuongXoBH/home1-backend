@@ -45,13 +45,45 @@ router.get("/by_statusId/:statusId", async (req, res) => {
 router.get("/by_projectId/:projectId", async (req, res) => {
   try {
     const { projectId } = req.params;
+    const { completed, fromDate, toDate, isOverdue, isNoExpiration } =
+      req.query;
 
-    const task = await Task.find({ projectId }).sort({ createdAt: 1 });
+    const query = {
+      projectId,
+    };
 
-    res.status(200).json(task);
+    if (completed !== undefined) {
+      query["completed"] = completed === "true";
+    }
+
+    const dueDateConditions = {};
+
+    if (fromDate) {
+      dueDateConditions["$gte"] = new Date(fromDate);
+    }
+
+    if (toDate) {
+      dueDateConditions["$lte"] = new Date(toDate);
+    }
+
+    if (isNoExpiration === "true") {
+      dueDateConditions["$eq"] = null;
+    }
+
+    if (isOverdue === "true") {
+      dueDateConditions["$gt"] = new Date();
+    }
+
+    if (Object.keys(dueDateConditions).length > 0) {
+      query["dueDate"] = dueDateConditions;
+    }
+
+    const tasks = await Task.find(query).sort({ createdAt: 1 });
+
+    res.status(200).json(tasks);
   } catch (err) {
     res.status(500).json({
-      message: "Failed to fetch task",
+      message: "Failed to fetch tasks",
       error: err.message,
     });
   }
