@@ -17,15 +17,15 @@ cloudinary.config({
 });
 
 // Hàm xử lý upload stream cho Cloudinary
-const uploadToCloudinary = (buffer) => {
+const uploadToCloudinary = (buffer, type) => {
   return new Promise((resolve, reject) => {
     const stream = cloudinary.v2.uploader.upload_stream(
       {
-        folder: "images",
+        folder: `images/${type}`,
         resource_type: "image",
         transformation: [
           {
-            width: 1080,
+            width: type === "avatar" ? 608 : 1080,
             height: 608,
             crop: "fill",
             quality: "100",
@@ -49,11 +49,12 @@ const uploadToCloudinary = (buffer) => {
 router.post("/upload-images", upload.single("image"), async (req, res) => {
   try {
     const file = req.file;
+    const { type } = req.body;
     if (!file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
 
-    const result = await uploadToCloudinary(file.buffer);
+    const result = await uploadToCloudinary(file.buffer, type);
 
     return res.status(200).json({
       url: result.secure_url,
