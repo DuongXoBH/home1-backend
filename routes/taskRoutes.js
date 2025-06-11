@@ -113,8 +113,9 @@ router.patch("/:id", async (req, res) => {
 
     task.statusId = statusId || task.statusId;
     task.title = title || task.title;
-    task.description = description || task.description;
-    task.dueDate = dueDate || task.dueDate;
+    task.description =
+      description === undefined ? task.description : description;
+    task.dueDate = dueDate === undefined ? task.dueDate : dueDate;
     task.completed = completed === undefined ? task.completed : completed;
     await task.save();
     res.status(200).json(task);
