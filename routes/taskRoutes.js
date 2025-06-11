@@ -71,7 +71,7 @@ router.get("/by_projectId/:projectId", async (req, res) => {
     }
 
     if (isOverdue === "true") {
-      dueDateConditions["$gt"] = new Date();
+      dueDateConditions["$lt"] = new Date();
     }
 
     if (Object.keys(dueDateConditions).length > 0) {
