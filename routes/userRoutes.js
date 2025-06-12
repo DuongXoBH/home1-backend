@@ -125,14 +125,16 @@ router.get("/me", verify, async (req, res) => {
 
 router.patch("/:id", async (req, res) => {
   const { id } = req.params;
-  const { name, email } = req.body;
+  const { name, email, password, avatar } = req.body;
 
   try {
     const user = await User.findById(id);
     if (!user) return res.status(404).send("User not found");
 
-    user.name = name || user.name;
-    user.email = email || user.email;
+    user.name = name !== undefined ? name : user.name;
+    user.email = email !== undefined ? email : user.email;
+    user.password = password !== undefined ? password : user.password;
+    user.avatar = avatar !== undefined ? avatar : user.avatar;
     await user.save();
     res.status(200).json({
       status: "success",
