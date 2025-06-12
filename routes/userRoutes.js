@@ -128,19 +128,22 @@ router.patch("/:id", async (req, res) => {
   const { name, email, password, avatar } = req.body;
 
   try {
-    const user = await User.findById(id);
+    const user = await User.findById(id).select("+password");
+    console.log("🚀 ~ router.patch ~ user:", user);
     if (!user) return res.status(404).send("User not found");
 
     const hash = password ? await bcrypt.hash(password, 10) : user.password;
 
     user.name = name ? name : user.name;
     user.email = email ? email : user.email;
-    user.password = await bcrypt.hash(password, 10);
+    user.password = hash;
     user.avatar = avatar !== undefined ? avatar : user.avatar;
     await user.save();
+    const userData = { ...user._doc };
+    delete userData.password;
     res.status(200).json({
       status: "success",
-      data: user,
+      data: userData,
     });
   } catch (err) {
     res.status(500).send(err);
